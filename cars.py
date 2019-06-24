@@ -21,7 +21,7 @@ vision_base_url = "https://westcentralus.api.cognitive.microsoft.com/vision/v2.0
 analyze_url = vision_base_url + "analyze"
 
 # Set image_path to the local path of an image that you want to analyze.
-image_path = "car.jpeg"
+image_path = "parking1.jpg"
 
 # Read the image into a byte array
 image_data = open(image_path, "rb").read()
@@ -43,3 +43,32 @@ image = Image.open(BytesIO(image_data))
 plt.imshow(image)
 plt.axis("off")
 _ = plt.title(image_caption, size="x-large", y=-0.1)
+
+
+####################################
+
+########### Python 3.2 #############
+import http.client, urllib.request, urllib.parse, urllib.error, base64
+
+headers = {
+    # Request headers
+    'Content-Type': 'application/json',
+    'Ocp-Apim-Subscription-Key': '{4aa2731000214338a5918f53f77b4abd}',
+}
+
+params = urllib.parse.urlencode({
+    # Request parameters
+    'visualFeatures': 'Categories',
+    'details': '{string}',
+    'language': 'en',
+})
+
+try:
+    conn = http.client.HTTPSConnection('westcentralus.api.cognitive.microsoft.com')
+    conn.request("POST", "/vision/v2.0/analyze?%s" % params, "{body}", headers)
+    response = conn.getresponse()
+    data = response.read()
+    print(data)
+    conn.close()
+except Exception as e:
+    print("[Errno {0}] {1}".format(e.errno, e.strerror))
